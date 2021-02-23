@@ -94,7 +94,7 @@ pub fn derive_deserialize(input: TokenStream) -> TokenStream {
     let match_discriminants = input.variants.iter().map(|variant| {
         let variant = &variant.ident;
         quote! {
-            discriminant::#variant => core::result::Result::Ok(#ident::#variant),
+            Discriminant::#variant => core::result::Result::Ok(#ident::#variant),
         }
     });
 
@@ -116,7 +116,7 @@ pub fn derive_deserialize(input: TokenStream) -> TokenStream {
         }
         None => quote! {
             core::result::Result::Err(serde::de::Error::custom(
-                format_args!(#error_format, other #(, discriminant::#variants)*)
+                format_args!(#error_format, other #(, Discriminant::#variants)*)
             ))
         },
     };
@@ -127,9 +127,9 @@ pub fn derive_deserialize(input: TokenStream) -> TokenStream {
             where
                 D: serde::Deserializer<'de>,
             {
-                struct discriminant;
+                struct Discriminant;
 
-                impl discriminant {
+                impl Discriminant {
                     #(#declare_discriminants)*
                 }
 
